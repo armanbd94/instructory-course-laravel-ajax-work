@@ -8,7 +8,6 @@ class DemoRepository implements DemoContract{
 
     public function ajax_post(DemoRequest $request)
     {
-        dd('ok2');
         return 'ok';
     }
 }
