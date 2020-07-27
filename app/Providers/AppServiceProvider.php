@@ -3,13 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Contracts\DemoContract;
-use App\Repositories\DemoRepository;
+
 class AppServiceProvider extends ServiceProvider
 {
-    protected $repositories = [
-        DemoContract::class => DemoRepository::class
-    ];
+
     /**
      * Register any application services.
      *
@@ -17,9 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        foreach ($this->repositories as $interface => $implementation) {
-            $this->app->bind($interface,$implementation);
-        }
+
     }
 
     /**
