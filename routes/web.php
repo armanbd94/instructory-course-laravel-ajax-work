@@ -27,3 +27,10 @@ Route::get('ajax-get', 'JavascriptController@ajax_get')->name('ajax.get');
 Route::post('ajax-post', 'JavascriptController@ajax_post')->name('ajax.post');
 Route::get('image', 'JavascriptController@ajax_get_image');
 
+Route::group(['prefix' => 'jquery', 'as' => 'jquery.'], function () {
+    Route::get('index', 'JqueryController@index');
+    Route::get('ajax-get', 'JqueryController@ajax_get')->name('ajax.get');
+    Route::post('ajax-post', 'JqueryController@ajax_post')->name('ajax.post');
+    Route::get('image', 'JqueryController@ajax_get_image')->name('ajax.image');
+});
+

@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class JavascriptController extends Controller
+class JqueryController extends Controller
 {
     public function index()
     {
-        return view('javascript');
+        return view('jquery');
     }
 
     public function ajax_get()
@@ -19,12 +19,13 @@ class JavascriptController extends Controller
     
     public function ajax_post(Request $request)
     {  
+
         return response($request->name);
     }
 
     public function ajax_get_image()
     {
-        $image = "<img src='https://image.shutterstock.com/image-photo/beautiful-pink-flower-anemones-fresh-260nw-1028135845.jpg' 
+        $image = "<img src='https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg' 
         alt='' style='width:200px'/>";
         return response($image);
     }
