@@ -80,7 +80,7 @@
             @endif
 
             <div class="content">
-                
+                <h1>CRUD - Part 1</h1>
 
                 <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
@@ -94,6 +94,6 @@
                 </div>
             </div>
         </div>
-        
+       
     </body>
 </html>

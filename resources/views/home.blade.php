@@ -3,9 +3,18 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            User List
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-sm btn-primary float-right" onclick="showModal('Add New User','Save')">Add New</button>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -13,11 +22,80 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                    <table class="table table-bordered">
+                        <thead>
+                            <th>SL</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>District</th>
+                            <th>Upazila</th>
+                            <th>Postal Code</th>
+                            <th>Verified Email</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
 
-                    {{ __('You are logged in!') }}
+                        </tbody>
+                    </table>
+                    
                 </div>
             </div>
         </div>
     </div>
 </div>
+@include('modal.modal-xl')
 @endsection
+
+@push('script')
+<script>
+   
+    function showModal(title,btnText){
+        $('#saveDataModal').modal(
+            {keyboard:false,
+            backdrop:'static',}
+        );
+        $('#saveDataModal .modal-title').text(title);
+        $('#saveDataModal #save-btn').text(btnText);
+    }
+
+    function upazilaList(district_id){
+        if(district_id){
+            $.ajax({
+                url:"{{route('upazila.list')}}",
+                type:"POST",
+                data:{district_id:district_id,_token:_token},
+                dataType:"JSON",
+                success: function(data){
+                    $('#upazila_id').html('');
+                    $('#upazila_id').html(data);
+                },
+                error: function(xhr, ajaxOption, thrownError){
+                    console.log(thrownError+'\r\n'+xhr.statusText+'\r\n'+xhr.responseText);
+                }
+            });
+        }
+    }
+
+    (function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
+@endpush

@@ -21,6 +21,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::post('upazila-list', 'HomeController@upazilaList')->name('upazila.list');
 
 Route::get('javascript', 'JavascriptController@index');
 Route::get('ajax-get', 'JavascriptController@ajax_get')->name('ajax.get');
@@ -34,3 +35,4 @@ Route::group(['prefix' => 'jquery', 'as' => 'jquery.'], function () {
     Route::get('image', 'JqueryController@ajax_get_image')->name('ajax.image');
 });
 
+Route::view('json', 'json');

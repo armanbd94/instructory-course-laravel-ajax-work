@@ -17,6 +17,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @stack('style')
 </head>
 <body>
     <div id="app">
@@ -77,6 +78,9 @@
     </div>
  <!-- Scripts -->
  <script src="{{ asset('js/app.js') }}"></script>
-    @stack('script')
+ <script>
+      let _token = "{{csrf_token()}}";
+ </script>
+@stack('script')
 </body>
 </html>
