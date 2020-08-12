@@ -7,7 +7,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST" class="needs-validation" novalidate>
+            <form method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
