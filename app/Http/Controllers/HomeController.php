@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Location;
 use App\Role;
+use App\User;
+use App\Location;
 use Illuminate\Http\Request;
+use App\Http\Requests\UserFormRequest;
 
 class HomeController extends Controller
 {
@@ -29,6 +31,18 @@ class HomeController extends Controller
         $data['districts'] = Location::where('parent_id',0)->orderBy('location_name','asc')->get();
         return view('home',compact('data'));
     }
+
+    public function store(UserFormRequest $request){
+        $data = $request->validated();
+        $result = User::updateOrCreate(['id'=>$request->update_id],$data);
+        if($result){
+            $output = ['status' => 'success', 'message'=>'Data has been saved successfully'];
+        }else{
+            $output = ['status' => 'success', 'message'=>'Data cannot save'];
+        }
+        return response()->json($output);
+    }
+
 
     public function upazilaList(Request $request)
     {

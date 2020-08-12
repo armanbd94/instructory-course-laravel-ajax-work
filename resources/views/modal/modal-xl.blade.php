@@ -7,34 +7,49 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST">
+            <form method="POST" id="storeForm">
                 @csrf
+                <input type="hidden" name="update_id" id="update_id">
                 <div class="modal-body">
                     <div class="row">
-                        <x-textbox labelName="Name" name="name" required="required" col="col-md-12" placeholder="Enter name"/>
-                        <x-textbox type="email" labelName="Email" name="email" required="required" col="col-md-12" placeholder="Enter email"/>
-                        <x-textbox labelName="Mobile No" name="mobile_no" required="required" col="col-md-12" placeholder="Enter mobile no"/>
-                        <x-selectbox  labelName="Role" name="role_id" required="required" col="col-md-12">
-                            @if (!$data['roles']->isEmpty())
-                                @foreach ($data['roles'] as $role)
-                                    <option value="{{$role->id}}">{{$role->role_name}}</option>
-                                @endforeach
-                            @endif
-                        </x-selectbox>
-                        <x-selectbox  onchange="upazilaList(this.value)" labelName="District" name="district_id" required="required" col="col-md-12">
-                            @if (!$data['districts']->isEmpty())
-                                @foreach ($data['districts'] as $district)
-                                    <option value="{{$district->id}}">{{$district->location_name}}</option>
-                                @endforeach
-                            @endif
-                        </x-selectbox>
-                        <x-selectbox  labelName="Upazila" name="upazila_id" required="required" col="col-md-12"/>
-                    
+                        <div class="col-md-12">
+                            <span class="text-danger">All (*) mark fields are required.</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <x-textbox labelName="Name" name="name" required="required" col="col-md-12" placeholder="Enter name"/>
+                            <x-textbox type="email" labelName="Email" name="email" required="required" col="col-md-12" placeholder="Enter email"/>
+                            <x-textbox labelName="Mobile No" name="mobile_no" required="required" col="col-md-12" placeholder="Enter mobile no"/>
+                            <x-textbox type="password" labelName="Password" name="password" required="required" col="col-md-12" placeholder="Enter password"/>
+                            <x-textbox type="password" labelName="Confirm Password" name="password_confirmation" required="required" col="col-md-12" placeholder="Enter password again"/>
+                            
+                            <x-selectbox  onchange="upazilaList(this.value)" labelName="District" name="district_id" required="required" col="col-md-12">
+                                @if (!$data['districts']->isEmpty())
+                                    @foreach ($data['districts'] as $district)
+                                        <option value="{{$district->id}}">{{$district->location_name}}</option>
+                                    @endforeach
+                                @endif
+                            </x-selectbox>
+                            <x-selectbox  labelName="Upazila" name="upazila_id" required="required" col="col-md-12"/>
+                            <x-textbox labelName="Postal Code" name="postal_code" required="required" col="col-md-12" placeholder="Enter postal code"/>
+                            <x-textarea labelName="Address" name="address" required="required" col="col-md-12" placeholder="Enter address"/>
+                        </div>
+                        <div class="col-lg-4">
+                            <x-selectbox  labelName="Role" name="role_id" required="required" col="col-md-12">
+                                @if (!$data['roles']->isEmpty())
+                                    @foreach ($data['roles'] as $role)
+                                        <option value="{{$role->id}}">{{$role->role_name}}</option>
+                                    @endforeach
+                                @endif
+                            </x-selectbox>
+                        </div>
+                        
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="save-btn"></button>
+                    <button type="button" class="btn btn-primary" id="save-btn"></button>
                 </div>
             </form>
         </div>

@@ -23,6 +23,10 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('upazila-list', 'HomeController@upazilaList')->name('upazila.list');
 
+Route::group(['prefix' => 'user', 'as'=>'user.'], function () {
+    Route::post('store', 'HomeController@store')->name('store');
+});
+
 Route::get('javascript', 'JavascriptController@index');
 Route::get('ajax-get', 'JavascriptController@ajax_get')->name('ajax.get');
 Route::post('ajax-post', 'JavascriptController@ajax_post')->name('ajax.post');
