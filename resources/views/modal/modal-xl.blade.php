@@ -7,7 +7,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST" id="storeForm">
+            <form method="POST" id="storeForm" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="update_id" id="update_id">
                 <div class="modal-body">
@@ -36,6 +36,10 @@
                             <x-textarea labelName="Address" name="address" required="required" col="col-md-12" placeholder="Enter address"/>
                         </div>
                         <div class="col-lg-4">
+                            <div class="form-group col-md-12">
+                                <input type="file" class="dropify" name="avatar" id="avatar" data-show-errors="true" data-errors-position="outside"
+                                data-allowed-file-extensions="jpg jpeg png svg webp gif">
+                            </div>
                             <x-selectbox  labelName="Role" name="role_id" required="required" col="col-md-12">
                                 @if (!$data['roles']->isEmpty())
                                     @foreach ($data['roles'] as $role)

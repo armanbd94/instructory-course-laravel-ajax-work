@@ -2,11 +2,15 @@
 
 @push('style')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet" href="{{asset('css/dropify.min.css')}}">
 <style>
 .required label:first-child::after{
     content: "* ";
     color: red;
     font-weight: bold;
+}
+.dropify-message .file-icon p{
+    font-size: 14px !important;
 }
 </style>   
 @endpush
@@ -63,12 +67,14 @@
 
 @push('script')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="{{asset('js/dropify.min.js')}}"></script>
 <script>
-
+    $('.dropify').dropify();
     function showModal(title,btnText){
         $('#storeForm')[0].reset();
         $('#storeForm').find('.is-invalid').removeClass('is-invalid');
         $('#storeForm').find('.error').remove();
+        $('#storeForm .dropify-render img').attr('src','');
         $('#saveDataModal').modal(
             {keyboard:false,
             backdrop:'static',}
