@@ -40,10 +40,12 @@ class UserFormRequest extends FormRequest
         $rules = User::VALIDATION_RULES;
         if(request()->update_id){
             $rules['email'][2] = 'unique:users,email,'.request()->update_id;
-            $rules['mobile_no'][2] = 'unique:users,mobile_no,'.request()->update_id;
+            $rules['mobile_no'][1] = 'unique:users,mobile_no,'.request()->update_id;
+        }else{
+            $rules['password']              = ['required','string','confirmed',new StrongPassword];
+            $rules['password_confirmation'] = ['required','string','min:10'];
         }
-        $rules['password'][3] = new StrongPassword;
-        $rules['mobile_no'][3] = new ValidMobileNumber;
+        $rules['mobile_no'][2] = new ValidMobileNumber;
         return $rules;
     }
 }

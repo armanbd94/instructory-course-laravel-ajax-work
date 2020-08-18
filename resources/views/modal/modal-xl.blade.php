@@ -39,6 +39,7 @@
                             <div class="form-group col-md-12">
                                 <input type="file" class="dropify" name="avatar" id="avatar" data-show-errors="true" data-errors-position="outside"
                                 data-allowed-file-extensions="jpg jpeg png svg webp gif">
+                                <input type="hidden" name="old_avatar" id="old_avatar">
                             </div>
                             <x-selectbox  labelName="Role" name="role_id" required="required" col="col-md-12">
                                 @if (!$data['roles']->isEmpty())

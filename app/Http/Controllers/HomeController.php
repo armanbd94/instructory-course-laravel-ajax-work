@@ -34,22 +34,100 @@ class HomeController extends Controller
         return view('home',compact('data'));
     }
 
+    public function userList(Request $request){
+        if($request->ajax()){
+            $user = new User();
+
+            $user->setOrderValue($request->input('order.0.column'));
+            $user->setDirValue($request->input('order.0.dir'));
+            $user->setLengthValue($request->input('length'));
+            $user->setStartValue($request->input('start'));
+
+            $list = $user->getList();
+
+            $data = [];
+            $no = $request->input('start');
+            foreach ($list  as $value) {
+                $no++;
+                $action = '';
+                $action .= ' <a class="dropdown-item edit_data" data-id="'.$value->id.'"><i class="fas fa-edit text-primary"></i> Edit</a>';
+                $action .= ' <a class="dropdown-item view_data"  data-id="'.$value->id.'"><i class="fas fa-eye text-warning"></i> View</a>';
+                $action .= ' <a class="dropdown-item delete_data"  data-id="'.$value->id.'"><i class="fas fa-trash text-danger"></i> Delete</a>';
+                
+                $btngroup = '<div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-th-list"></i>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                '.$action.'
+                </div>
+              </div>';
+
+
+              $row = [];
+              $row[] = $no;
+              $row[] = $this->avatar($value->avatar,$value->name);
+              $row[] = $value->name;
+              $row[] = $value->role->role_name;
+              $row[] = $value->email;
+              $row[] = $value->mobile_no;
+              $row[] = $value->district->location_name;
+              $row[] = $value->upazila->location_name;
+              $row[] = $value->postal_code;
+              $row[] = $value->email_verified_at ? '<span class="badge badge-pill badge-success">Verified</span>' : '<span class="badge badge-pill badge-danger">Unverified</span>';
+              $row[] = STATUS[$value->status];
+              $row[] = $btngroup;
+              $data[] = $row;
+            }
+            $output = array(
+                "draw"           =>$request->input('draw'),
+                "recordsTotal"   => $user->count_all(),
+                "recordsFiltered"=> $user->count_filtered(),
+                "data"           => $data
+            );
+
+            echo json_encode($output);
+        }
+    }
+
+    private function avatar($avatar=null,$name){
+        return !empty($avatar) ? '<img src="'.asset("storage/".USER_AVATAR.$avatar).'" alt="'.$name.'" style="width:60px;"/>' : '<img style="width:60px;" src="'.asset("svg/user.svg").'" alt="User Avatar"/>';
+    }
+
     public function store(UserFormRequest $request){
         $data = $request->validated();
         $collection = collect($data)->except(['avatar','password_confirmation']);
         if($request->file('avatar')){
            $avatar =  $this->upload_file($request->file('avatar'),USER_AVATAR);
            $collection = $collection->merge(compact('avatar'));
+           if(!empty($request->old_avatar)){
+               $this->delete_file($request->old_avatar,USER_AVATAR);
+           }
         }
         $result = User::updateOrCreate(['id'=>$request->update_id],$collection->all());
         if($result){
             $output = ['status' => 'success', 'message'=>'Data has been saved successfully'];
         }else{
+            if(!empty($avatar)){
+                $this->delete_file($avatar,USER_AVATAR);
+            }
+            
             $output = ['status' => 'success', 'message'=>'Data cannot save'];
         }
         return response()->json($output);
     }
 
+    public function edit(Request $request){
+        if($request->ajax()){
+            $data = User::toBase()->find($request->id);
+            if($data){
+                $output['user'] = $data;
+            }else{
+                $output['user'] = '';
+            }
+            return response()->json($output);
+        }
+    }
 
     public function upazilaList(Request $request)
     {

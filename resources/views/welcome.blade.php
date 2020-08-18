@@ -77,7 +77,7 @@
             @endif
 
             <div class="content">
-                <h1>CRUD - Part 2</h1>
+                <h1>CRUD - Part 6</h1>
 
                 <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
