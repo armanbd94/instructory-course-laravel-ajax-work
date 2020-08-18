@@ -66,6 +66,7 @@
     </div>
 </div>
 @include('modal.modal-xl')
+@include('modal.modal-view')
 @endsection
 
 @push('script')
@@ -204,6 +205,31 @@
                     });
                     $('#saveDataModal .modal-title').html('<i class="fas fa-edit"></i> <span>Edit '+data.user.name+'</span>');
                     $('#saveDataModal #save-btn').text('update');
+
+                },
+                error: function(xhr, ajaxOption, thrownError){
+                    console.log(thrownError+'\r\n'+xhr.statusText+'\r\n'+xhr.responseText);
+                }
+            });
+        }
+    });
+
+    $(document).on('click','.view_data',function(){
+        let id = $(this).data('id');
+        if(id){
+            $.ajax({
+                url:"{{route('user.show')}}",
+                type:"POST",
+                data:{id:id,_token:_token},
+                dataType:"JSON",
+                success: function(data){
+                    $('#view_data').html('');
+                    $('#view_data').html(data.user_view);
+                    $('#viewDataModal').modal({
+                        keyboard:false,
+                        backdrop:'static',
+                    });
+                    $('#viewDataModal .modal-title').html('<i class="fas fa-eye"></i> <span> '+data.name+' Details</span>');
 
                 },
                 error: function(xhr, ajaxOption, thrownError){

@@ -117,6 +117,21 @@ class HomeController extends Controller
         return response()->json($output);
     }
 
+    public function show(Request $request){
+        if($request->ajax()){
+            $data = User::with(['role:id,role_name','district:id,location_name',
+            'upazila:id,location_name'])->find($request->id);
+            if($data){
+                $output['user_view'] = view('user_details',compact('data'))->render();
+                $output['name'] = $data->name;
+            }else{
+                $output['user_view'] = '';
+                $output['name']  = '';
+            }
+            return response()->json($output);
+        }
+    }
+
     public function edit(Request $request){
         if($request->ajax()){
             $data = User::toBase()->find($request->id);
