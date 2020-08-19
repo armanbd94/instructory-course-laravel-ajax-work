@@ -14,6 +14,7 @@
 .dropify-message .file-icon p{
     font-size: 14px !important;
 }
+
 </style>   
 @endpush
 
@@ -29,7 +30,7 @@
                             User List
                         </div>
                         <div class="col-md-6">
-                            <button class="btn btn-sm btn-primary float-right" onclick="showModal('Add New User','Save')">Add New</button>
+                            <button class="btn btn-primary float-right" onclick="showModal('Add New User','Save')">Add New</button>
                         </div>
                     </div>
                 </div>
@@ -42,6 +43,39 @@
                     @endif
                    <div class="row">
                        <div class="col-md-12">
+                           <form mathod="POST" id="form-filter">
+                               <div class="row">
+                                    <x-textbox labelName="Name" name="name" col="col-md-3" placeholder="Enter name"/>
+                                    <x-textbox type="email" labelName="Email" name="email" col="col-md-3" placeholder="Enter email"/>
+                                    <x-textbox labelName="Mobile No" name="mobile_no" col="col-md-3" placeholder="Enter mobile no"/>
+                                    <x-selectbox  labelName="Role" name="role_id" required="required" col="col-md-3">
+                                        @if (!$data['roles']->isEmpty())
+                                            @foreach ($data['roles'] as $role)
+                                                <option value="{{$role->id}}">{{$role->role_name}}</option>
+                                            @endforeach
+                                        @endif
+                                    </x-selectbox>
+                                    <x-selectbox  onchange="upazilaList(this.value,'form-filter')" labelName="District" name="district_id" col="col-md-3">
+                                        @if (!$data['districts']->isEmpty())
+                                            @foreach ($data['districts'] as $district)
+                                                <option value="{{$district->id}}">{{$district->location_name}}</option>
+                                            @endforeach
+                                        @endif
+                                    </x-selectbox>
+                                    <x-selectbox  labelName="Upazila" name="upazila_id" col="col-md-3"/>
+                                    <x-selectbox labelName="Status" name="status" col="col-md-3">
+                                        <option value="">Select Please</option>
+                                        <option value="1">Active</option>
+                                        <option value="2">Inactive</option>
+                                    </x-selectbox>
+                                    <div class="form-group col-md-3" style="padding-top:30px;">
+                                        <button type="button" class="btn btn-success" id="btn-filter">Search</button>
+                                        <button type="reset" class="btn btn-danger" id="btn-reset">Reset</button>
+                                    </div>
+                               </div>
+                           </form>
+                       </div>
+                       <div class="col-md-12 mt-5">
                         <table class="table table-bordered" id="dataTable">
                             <thead>
                                 <th>SL</th>
@@ -101,12 +135,32 @@
                 "url": "{{route('user.list')}}",
                 "type":"POST",
                 "data":function(data){
-                    data._token = _token;
+                    data.name         = $('#form-filter #name').val();
+                    data.email        = $('#form-filter #email').val();
+                    data.mobile_no    = $('#form-filter #mobile_no').val();
+                    data.role_id      = $('#form-filter #role_id').val();
+                    data.district_id  = $('#form-filter #district_id').val();
+                    data.upazila_id   = $('#form-filter #upazila_id').val();
+                    data.status       = $('#form-filter #status').val();
+                    data._token       = _token;
                 }
-            }
+            },
+            "columnDefs":[{
+                "targets":[1,11],
+                "orderable":false
+            }]
         });
     });
 
+
+    $('#btn-filter').click(function(){
+        table.ajax.reload();
+    });
+
+    $('#btn-reset').click(function(){
+        $('#form-filter')[0].reset();
+        table.ajax.reload();
+    });
 
     $('.dropify').dropify();
     function showModal(title,btnText){
@@ -189,7 +243,7 @@
                     $('#storeForm #email').val(data.user.email);
                     $('#storeForm #mobile_no').val(data.user.mobile_no);
                     $('#storeForm #district_id').val(data.user.district_id);
-                    upazilaList(data.user.district_id);
+                    upazilaList(data.user.district_id,'storeForm');
                     setTimeout(() => {
                         $('#storeForm #upazila_id').val(data.user.upazila_id);
                     }, 1000);
@@ -279,7 +333,7 @@
         });
     }
 
-    function upazilaList(district_id){
+    function upazilaList(district_id,form){
         if(district_id){
             $.ajax({
                 url:"{{route('upazila.list')}}",
@@ -287,8 +341,8 @@
                 data:{district_id:district_id,_token:_token},
                 dataType:"JSON",
                 success: function(data){
-                    $('#upazila_id').html('');
-                    $('#upazila_id').html(data);
+                    $('#'+form+' #upazila_id').html('');
+                    $('#'+form+' #upazila_id').html(data);
                 },
                 error: function(xhr, ajaxOption, thrownError){
                     console.log(thrownError+'\r\n'+xhr.statusText+'\r\n'+xhr.responseText);
@@ -331,6 +385,5 @@
                 break;
         }
     }
-
 </script>
 @endpush
