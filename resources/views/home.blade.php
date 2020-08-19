@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="{{asset('css/datatables.bundle7.0.8.css')}}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <link rel="stylesheet" href="{{asset('css/dropify.min.css')}}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@9.17.1/dist/sweetalert2.min.css">
 <style>
 .required label:first-child::after{
     content: "* ";
@@ -15,6 +16,7 @@
 }
 </style>   
 @endpush
+
 
 @section('content')
 <div class="container">
@@ -73,6 +75,7 @@
 <script src="{{asset('js/datatables.bundle7.0.8.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="{{asset('js/dropify.min.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9.17.1/dist/sweetalert2.min.js"></script>
 <script>
     var table;
     $(document).ready(function(){
@@ -238,6 +241,43 @@
             });
         }
     });
+
+    $(document).on('click','.delete_data',function(){
+        let id = $(this).data('id');
+        let name = $(this).data('name');
+        let row  = table.row($(this).parent('tr'));
+        let url = "{{ route('user.delete') }}";
+        delete_data(id,url,table,row,name);
+    });
+
+    function delete_data(id,url,table,row,name){
+        Swal.fire({
+            title: 'Are you sure to delete '+name+' data?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url:url,
+                    type:"POST",
+                    data:{id:id,_token:_token},
+                    dataType:"JSON",
+                }).done(function(response){
+                    if(response.status == "success"){
+                        Swal.fire("Deleted",response.message,"success").then(function(){
+                            table.row(row).remove().draw(false);
+                        });
+                    }
+                }).fail(function(){
+                    swal.fire('Oops...',"Somthing went wrong with ajax!","error");
+                });
+            }
+        });
+    }
 
     function upazilaList(district_id){
         if(district_id){

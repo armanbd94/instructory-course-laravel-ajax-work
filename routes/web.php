@@ -18,6 +18,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -28,6 +29,7 @@ Route::group(['prefix' => 'user', 'as'=>'user.'], function () {
     Route::post('list', 'HomeController@userList')->name('list');
     Route::post('edit', 'HomeController@edit')->name('edit');
     Route::post('show', 'HomeController@show')->name('show');
+    Route::post('delete', 'HomeController@destroy')->name('delete');
 });
 
 Route::get('javascript', 'JavascriptController@index');

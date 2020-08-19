@@ -20,6 +20,7 @@ class HomeController extends Controller
     public function __construct()
     {
         // $this->middleware('auth');
+
     }
 
     /**
@@ -52,7 +53,7 @@ class HomeController extends Controller
                 $action = '';
                 $action .= ' <a class="dropdown-item edit_data" data-id="'.$value->id.'"><i class="fas fa-edit text-primary"></i> Edit</a>';
                 $action .= ' <a class="dropdown-item view_data"  data-id="'.$value->id.'"><i class="fas fa-eye text-warning"></i> View</a>';
-                $action .= ' <a class="dropdown-item delete_data"  data-id="'.$value->id.'"><i class="fas fa-trash text-danger"></i> Delete</a>';
+                $action .= ' <a class="dropdown-item delete_data"  data-id="'.$value->id.'" data-name="'.$value->name.'"><i class="fas fa-trash text-danger"></i> Delete</a>';
                 
                 $btngroup = '<div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -112,7 +113,7 @@ class HomeController extends Controller
                 $this->delete_file($avatar,USER_AVATAR);
             }
             
-            $output = ['status' => 'success', 'message'=>'Data cannot save'];
+            $output = ['status' => 'error', 'message'=>'Data cannot save'];
         }
         return response()->json($output);
     }
@@ -139,6 +140,26 @@ class HomeController extends Controller
                 $output['user'] = $data;
             }else{
                 $output['user'] = '';
+            }
+            return response()->json($output);
+        }
+    }
+
+    public function destroy(Request $request){
+        if($request->ajax()){
+            $data = User::find($request->id);
+            if($data){
+                $avatar = $data->avatar;
+                if($data->delete()){
+                    if(!empty($avatar)){
+                        $this->delete_file($avatar,USER_AVATAR);
+                    }
+                    $output = ['status' => 'success', 'message'=>'Data deleted successfully'];
+                }else{
+                    $output = ['status' => 'error', 'message'=>'Data cannot delete!'];
+                }
+            }else{
+                $output = ['status' => 'error', 'message'=>'Data cannot delete!'];
             }
             return response()->json($output);
         }
