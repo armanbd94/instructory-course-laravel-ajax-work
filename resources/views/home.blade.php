@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @push('style')
-<link rel="stylesheet" href="{{asset('css/datatables.bundle7.0.8.css')}}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-<link rel="stylesheet" href="{{asset('css/dropify.min.css')}}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@9.17.1/dist/sweetalert2.min.css">
+<link rel="stylesheet" href="{{ asset('css/datatables.bundle7.0.8.css')}}">
+<link rel="stylesheet" href="{{ asset('css/toastr.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/dropify.min.css')}}">
+<link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}">
 <style>
 .required label:first-child::after{
     content: "* ";
@@ -169,10 +169,10 @@ input:checked + .slider:before {
 @endsection
 
 @push('script')
-<script src="{{asset('js/datatables.bundle7.0.8.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="{{asset('js/dropify.min.js')}}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9.17.1/dist/sweetalert2.min.js"></script>
+<script src="{{ asset('js/datatables.bundle7.0.8.js')}}"></script>
+<script src="{{ asset('js/toastr.min.js') }}"></script>
+<script src="{{ asset('js/dropify.min.js')}}"></script>
+<script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 <script>
     var table;
     $(document).ready(function(){
@@ -188,7 +188,7 @@ input:checked + .slider:before {
                 [5,10,15,25,50,100,1000,10000,-1],
                 [5,10,15,25,50,100,1000,10000,"All"]
             ],
-            "pageLength":5,
+            "pageLength":5, //number of data show per page
             "language":{
                 processing: `<img src="{{asset('svg/table-loading.svg')}}" alt="Loading...."/>`,
                 emptyTable: '<strong class="text-danger">No Data Found</strong>',
@@ -219,7 +219,7 @@ input:checked + .slider:before {
                     "targets":[3,6,7,8,9],
                     "className":"text-center"
                 }
-        ],
+            ],
             "dom":"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'B>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
@@ -340,7 +340,7 @@ input:checked + .slider:before {
 						objLayout['paddingLeft'] = function(i) { return 4; };
 						objLayout['paddingRight'] = function(i) { return 4; };
 						doc.content[0].layout = objLayout;
-				}
+				    }
                 },
                 
             ],
@@ -363,7 +363,6 @@ input:checked + .slider:before {
         $('#storeForm')[0].reset();
         $('#storeForm').find('.is-invalid').removeClass('is-invalid');
         $('#storeForm').find('.error').remove();
-        // $('#storeForm .dropify-render img').attr('src','');
         $('#password, #password_confirmation').parent().removeClass('d-none');
         $('.dropify-clear').trigger('click');
         $('#saveDataModal').modal(
