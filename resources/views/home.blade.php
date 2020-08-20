@@ -15,92 +15,155 @@
     font-size: 14px !important;
 }
 
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+
+input:checked + .slider {
+  background-color: #38C172
+}
+input:not(:checked) + .slider {
+  background-color: #D0211C;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #38C172;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
 </style>   
 @endpush
 
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-md-6">
-                            User List
-                        </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-primary float-right" onclick="showModal('Add New User','Save')">Add New</button>
-                        </div>
+
+<div class="row justify-content-center px-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        User List
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-primary float-right" onclick="showModal('Add New User','Save')">Add New</button>
                     </div>
                 </div>
+            </div>
 
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-                   <div class="row">
-                       <div class="col-md-12">
-                           <form mathod="POST" id="form-filter">
-                               <div class="row">
-                                    <x-textbox labelName="Name" name="name" col="col-md-3" placeholder="Enter name"/>
-                                    <x-textbox type="email" labelName="Email" name="email" col="col-md-3" placeholder="Enter email"/>
-                                    <x-textbox labelName="Mobile No" name="mobile_no" col="col-md-3" placeholder="Enter mobile no"/>
-                                    <x-selectbox  labelName="Role" name="role_id" required="required" col="col-md-3">
-                                        @if (!$data['roles']->isEmpty())
-                                            @foreach ($data['roles'] as $role)
-                                                <option value="{{$role->id}}">{{$role->role_name}}</option>
-                                            @endforeach
-                                        @endif
-                                    </x-selectbox>
-                                    <x-selectbox  onchange="upazilaList(this.value,'form-filter')" labelName="District" name="district_id" col="col-md-3">
-                                        @if (!$data['districts']->isEmpty())
-                                            @foreach ($data['districts'] as $district)
-                                                <option value="{{$district->id}}">{{$district->location_name}}</option>
-                                            @endforeach
-                                        @endif
-                                    </x-selectbox>
-                                    <x-selectbox  labelName="Upazila" name="upazila_id" col="col-md-3"/>
-                                    <x-selectbox labelName="Status" name="status" col="col-md-3">
-                                        <option value="">Select Please</option>
-                                        <option value="1">Active</option>
-                                        <option value="2">Inactive</option>
-                                    </x-selectbox>
-                                    <div class="form-group col-md-3" style="padding-top:30px;">
-                                        <button type="button" class="btn btn-success" id="btn-filter">Search</button>
-                                        <button type="reset" class="btn btn-danger" id="btn-reset">Reset</button>
-                                    </div>
-                               </div>
-                           </form>
-                       </div>
-                       <div class="col-md-12 mt-5">
-                        <table class="table table-bordered" id="dataTable">
-                            <thead>
-                                <th>SL</th>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>Role</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>District</th>
-                                <th>Upazila</th>
-                                <th>Postal Code</th>
-                                <th>Verified Email</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                       </div>
-                   </div>
-                    
+            <div class="card-body">
+                @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
+                @endif
+                <div class="row">
+                    <div class="col-md-12">
+                        <form mathod="POST" id="form-filter">
+                            <div class="row">
+                                <x-textbox labelName="Name" name="name" col="col-md-3" placeholder="Enter name"/>
+                                <x-textbox type="email" labelName="Email" name="email" col="col-md-3" placeholder="Enter email"/>
+                                <x-textbox labelName="Mobile No" name="mobile_no" col="col-md-3" placeholder="Enter mobile no"/>
+                                <x-selectbox  labelName="Role" name="role_id" required="required" col="col-md-3">
+                                    @if (!$data['roles']->isEmpty())
+                                        @foreach ($data['roles'] as $role)
+                                            <option value="{{$role->id}}">{{$role->role_name}}</option>
+                                        @endforeach
+                                    @endif
+                                </x-selectbox>
+                                <x-selectbox  onchange="upazilaList(this.value,'form-filter')" labelName="District" name="district_id" col="col-md-3">
+                                    @if (!$data['districts']->isEmpty())
+                                        @foreach ($data['districts'] as $district)
+                                            <option value="{{$district->id}}">{{$district->location_name}}</option>
+                                        @endforeach
+                                    @endif
+                                </x-selectbox>
+                                <x-selectbox  labelName="Upazila" name="upazila_id" col="col-md-3"/>
+                                <x-selectbox labelName="Status" name="status" col="col-md-3">
+                                    <option value="">Select Please</option>
+                                    <option value="1">Active</option>
+                                    <option value="2">Inactive</option>
+                                </x-selectbox>
+                                <div class="form-group col-md-3" style="padding-top:30px;">
+                                    <button type="button" class="btn btn-success" id="btn-filter">Search</button>
+                                    <button type="reset" class="btn btn-danger" id="btn-reset">Reset</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-12 mt-5">
+                    <table class="table table-bordered" id="dataTable">
+                        <thead>
+                            <th>SL</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>District</th>
+                            <th>Upazila</th>
+                            <th>Postal Code</th>
+                            <th>Verified Email</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    </div>
                 </div>
+                
             </div>
         </div>
     </div>
 </div>
+
 @include('modal.modal-xl')
 @include('modal.modal-view')
 @endsection
@@ -113,6 +176,7 @@
 <script>
     var table;
     $(document).ready(function(){
+ 
         table = $('#dataTable').DataTable({
             "processing":true, //Feature control the processing indicator
             "serverSide":true, //Feature control DataTable server side processing mode
@@ -145,10 +209,142 @@
                     data._token       = _token;
                 }
             },
-            "columnDefs":[{
-                "targets":[1,11],
-                "orderable":false
-            }]
+            "columnDefs":[
+                {
+                    "targets":[1,11],
+                    "orderable":false,
+                    "className":"text-center"
+                },
+                {
+                    "targets":[3,6,7,8,9],
+                    "className":"text-center"
+                }
+        ],
+            "dom":"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'B>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+
+            "buttons":[
+                'colvis',
+                {
+                    "extend":'print',
+                    "title":"User List",
+                    "orientation":"landscape", //portrait
+                    "pageSize":"A4", //A3,A5,A6,legal,letter
+                    "exportOptions":{
+                        columns: function(index, data, node){
+                            return table.column(index).visible();
+                        }
+                    },
+                    customize: function(win){
+                        $(win.document.body).addClass('bg-white');
+                    },
+                },
+                {
+                    "extend":'csv',
+                    "title":"User List",
+                    "filename":"user-list",
+                    "exportOptions":{
+                        columns: function(index, data, node){
+                            return table.column(index).visible();
+                        }
+                    }
+                },
+                {
+                    "extend":'excel',
+                    "title":"User List",
+                    "filename":"user-list",
+                    "exportOptions":{
+                        columns: function(index, data, node){
+                            return table.column(index).visible();
+                        }
+                    }
+                },
+                {
+                    "extend":'pdf',
+                    "title":"User List",
+                    "filename":"user-list",
+                    "orientation":"landscape", //portrait
+                    "pageSize":"A4", //A3,A5,A6,legal,letter
+                    "exportOptions":{
+                        columns: [0,2,3,4,5,6,7,8,9]
+                    },
+                    customize: function (doc) {
+                        doc.content[1].table.widths = ['5%','10%','10%','20%','10%','10%','15%','10%','10%'];
+                        doc.styles.tableHeader.alignment="left";
+						//Remove the title created by datatTables
+						
+						//Create a date string that we use in the footer. Format is dd-mm-yyyy
+						var now = new Date();
+						var jsDate = now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear();
+						// Logo converted to base64
+						// var logo = getBase64FromImageUrl('https://datatables.net/media/images/logo.png');
+						// The above call should work, but not when called from codepen.io
+						// So we use a online converter and paste the string in.
+						// Done on http://codebeautify.org/image-to-base64-converter
+						// It's a LONG string scroll down to see the rest of the code !!!
+						var logo = 'data:image/jpeg;base64,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ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=';
+						// A documentation reference can be found at
+						// https://github.com/bpampuch/pdfmake#getting-started
+						// Set page margins [left,top,right,bottom] or [horizontal,vertical]
+						// or one number for equal spread
+						// It's important to create enough space at the top for a header !!!
+						doc.pageMargins = [20,20,20,20];
+						// Set the font size fot the entire document
+						doc.defaultStyle.fontSize = 10;
+						// Set the fontsize for the table header
+						doc.styles.tableHeader.fontSize = 10;
+
+                        doc.content.splice(0,1,
+                            {
+                                margin:[0,0,0,5],
+                                alignment: 'center',
+                                fontSize:10,
+                                image:logo,
+                                width:35,
+                            },
+                            {
+                                alignment:'center',
+                                text:['User List'],
+                                fontSize:10,
+                                margin: [0,0,0,5],
+                                bold:true
+                            }
+                        );
+						// Create a footer object with 2 columns
+						// Left side: report creation date
+						// Right side: current page and total pages
+						doc['footer']=(function(page, pages) {
+							return {
+								columns: [
+									{
+										alignment: 'left',
+										text: ['Created on: ', { text: jsDate.toString() }]
+									},
+									{
+										alignment: 'right',
+										text: ['page ', { text: page.toString() },	' of ',	{ text: pages.toString() }]
+									}
+								],
+								margin: [20,5,20,5]
+							}
+						});
+						// Change dataTable layout (Table styling)
+						// To use predefined layouts uncomment the line below and comment the custom lines below
+						// doc.content[0].layout = 'lightHorizontalLines'; // noBorders , headerLineOnly
+						var objLayout = {};
+						objLayout['hLineWidth'] = function(i) { return .5; };
+						objLayout['vLineWidth'] = function(i) { return .5; };
+						objLayout['hLineColor'] = function(i) { return '#aaa'; };
+						objLayout['vLineColor'] = function(i) { return '#aaa'; };
+						objLayout['paddingLeft'] = function(i) { return 4; };
+						objLayout['paddingRight'] = function(i) { return 4; };
+						doc.content[0].layout = objLayout;
+				}
+                },
+                
+            ],
+
         });
     });
 
@@ -332,6 +528,35 @@
             }
         });
     }
+
+    $(document).on('change','.change_status',function(){
+        let id = $(this).data('id');
+        let status;
+        if($(this).is(':checked')){
+            status = 1;
+        }else{
+            status = 2;
+        }
+        if(id && status){
+            $.ajax({
+                url:"{{route('user.change.status')}}",
+                type:"POST",
+                data:{id:id,status:status,_token:_token},
+                dataType:"JSON",
+                success: function(data){
+                    flashMessage(data.status,data.message);
+                    if(data.status == 'success')
+                    {
+                        table.ajax.reload(null,false);
+                    }
+
+                },
+                error: function(xhr, ajaxOption, thrownError){
+                    console.log(thrownError+'\r\n'+xhr.statusText+'\r\n'+xhr.responseText);
+                }
+            });
+        }
+    });
 
     function upazilaList(district_id,form){
         if(district_id){

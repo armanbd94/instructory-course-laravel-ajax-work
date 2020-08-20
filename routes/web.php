@@ -30,6 +30,7 @@ Route::group(['prefix' => 'user', 'as'=>'user.'], function () {
     Route::post('edit', 'HomeController@edit')->name('edit');
     Route::post('show', 'HomeController@show')->name('show');
     Route::post('delete', 'HomeController@destroy')->name('delete');
+    Route::post('change-status', 'HomeController@changeStatus')->name('change.status');
 });
 
 Route::get('javascript', 'JavascriptController@index');

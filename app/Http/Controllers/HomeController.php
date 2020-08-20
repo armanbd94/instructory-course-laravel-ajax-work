@@ -98,7 +98,7 @@ class HomeController extends Controller
                 $row[] = $value->upazila->location_name;
                 $row[] = $value->postal_code;
                 $row[] = $value->email_verified_at ? '<span class="badge badge-pill badge-success">Verified</span>' : '<span class="badge badge-pill badge-danger">Unverified</span>';
-                $row[] = STATUS[$value->status];
+                $row[] = $this->toggle_button($value->status,$value->id);
                 $row[] = $btngroup;
                 $data[] = $row;
             }
@@ -116,6 +116,14 @@ class HomeController extends Controller
     private function avatar($avatar = null, $name)
     {
         return !empty($avatar) ? '<img src="' . asset("storage/" . USER_AVATAR . $avatar) . '" alt="' . $name . '" style="width:60px;"/>' : '<img style="width:60px;" src="' . asset("svg/user.svg") . '" alt="User Avatar"/>';
+    }
+
+    private function toggle_button($status,$id){
+            $checked = $status == 1 ? 'checked' : '';
+            return    '<label class="switch">
+                        <input type="checkbox" '.$checked.' class="change_status" data-id="'.$id.'">
+                        <span class="slider round"></span>
+                        </label>';
     }
 
     public function store(UserFormRequest $request)
@@ -191,6 +199,25 @@ class HomeController extends Controller
             return response()->json($output);
         }
     }
+
+    public function changeStatus(Request $request)
+    {
+        if ($request->ajax()) {
+            if ($request->id && $request->status) {
+                $result = User::find($request->id)->update(['status'=>$request->status]);
+                if ($result) {
+                    $output = ['status' => 'success', 'message' => 'User status changed successfully'];
+                } else {
+                    $output = ['status' => 'error', 'message' => 'User status cannot change'];
+                }
+            } else {
+                $output = ['status' => 'error', 'message' => 'User status cannot change'];
+            }
+            return response()->json($output);
+        }
+    }
+
+
 
     public function upazilaList(Request $request)
     {
