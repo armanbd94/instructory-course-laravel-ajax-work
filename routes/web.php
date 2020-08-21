@@ -31,6 +31,8 @@ Route::group(['prefix' => 'user', 'as'=>'user.'], function () {
     Route::post('show', 'HomeController@show')->name('show');
     Route::post('delete', 'HomeController@destroy')->name('delete');
     Route::post('change-status', 'HomeController@changeStatus')->name('change.status');
+    Route::post('bulk-action-delete', 'HomeController@bulkActionDelete')->name('bulk.action.delete');
+
 });
 
 Route::get('javascript', 'JavascriptController@index');

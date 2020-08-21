@@ -132,7 +132,7 @@ class User extends Authenticatable
 
     private function get_datatable_query()
     {
-        $this->column_order = ['users.id', '', 'users.name', 'users.role_id', 'users.email', 'users.mobile_no',
+        $this->column_order = ['','users.id', '', 'users.name', 'users.role_id', 'users.email', 'users.mobile_no',
             'users.district_id', 'users.upazila_id', 'users.postal_code', 'users.email_verified_at', 'users.status', ''];
 
         $query = self::with(['role:id,role_name', 'district:id,location_name', 'upazila:id,location_name']);

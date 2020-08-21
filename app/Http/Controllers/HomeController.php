@@ -88,6 +88,11 @@ class HomeController extends Controller
               </div>';
 
                 $row = [];
+                $row[] = '<div class="custom-control custom-checkbox">
+                <input type="checkbox" value="'.$value->id.'"
+                class="custom-control-input select_data" onchange="select_single_item('.$value->id.')" id="checkbox'.$value->id.'">
+                <label class="custom-control-label" for="checkbox'.$value->id.'"></label>
+              </div>';
                 $row[] = $no;
                 $row[] = $this->avatar($value->avatar, $value->name);
                 $row[] = $value->name;
@@ -199,6 +204,29 @@ class HomeController extends Controller
             return response()->json($output);
         }
     }
+
+    public function bulkActionDelete(Request $request)
+    {
+        if ($request->ajax()) {
+            $avatars = User::toBase()->select('avatar')->whereIn('id',$request->id)->get();
+            $result = User::destroy($request->id);
+            if ($result) {
+                if(!empty($avatars)){
+                    foreach ($avatars as $value) {
+                        if (!empty($value->avatar)) {
+                            $this->delete_file($value->avatar, USER_AVATAR);
+                        }
+                    }
+                }
+                $output = ['status' => 'success', 'message' => 'Data has been deleted successfully'];
+            } else {
+                $output = ['status' => 'error', 'message' => 'Data cannot delete!'];
+            }
+            return response()->json($output);
+        }
+    }
+
+    
 
     public function changeStatus(Request $request)
     {
